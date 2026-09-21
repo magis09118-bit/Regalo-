@@ -11,13 +11,13 @@
     <p class="message-main">Te quiero, siempre estaré ahí para ti.</p>
     <p class="message-footer">Me hubiera gustado dártelo en persona. 💛</p>
     
-    <!-- El reproductor ahora es visible en formato mini para que el celular no bloquee el audio -->
+    <!-- Mini reproductor visible e interactivo para asegurar compatibilidad móvil -->
     <div class="player-container">
         <div id="youtubePlayer"></div>
     </div>
 </div>
 
-<!-- 2. CÓDIGO CSS -->
+<!-- 2. CÓDIGO CSS (Diseño y corrección de capas) -->
 <style>
 body {
     margin: 0; padding: 0;
@@ -28,9 +28,10 @@ body {
     font-family: 'Segoe UI', Roboto, sans-serif;
 }
 .galaxy {
-    position: relative; width: 100vw; height: 100vh;
+    position: absolute; width: 100vw; height: 100vh;
     display: flex; justify-content: center; align-items: center;
     animation: rotateGalaxy 60s linear infinite;
+    z-index: 1; /* Capa inferior para el fondo */
 }
 .flower {
     position: absolute; font-size: var(--size);
@@ -40,24 +41,31 @@ body {
     opacity: var(--opacity); user-select: none;
     animation: float 4s ease-in-out infinite alternate;
 }
+
+/* --- CORRECCIÓN CLAVE AQUÍ --- */
 .heart-btn {
     position: absolute; background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px); border: 2px solid rgba(255, 230, 0, 0.5);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 230, 0, 0.5);
     padding: 20px 30px; border-radius: 50px; cursor: pointer;
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.3); z-index: 20;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.3); 
+    z-index: 9999 !important; /* Fuerza al botón a ponerse al frente de todo */
     text-align: center; animation: pulseHeart 2s infinite;
-    transition: all 0.5s ease;
+    transition: all 0.3s ease;
+    pointer-events: auto !important; /* Asegura que el celular reciba el toque */
 }
 .heart-btn span { font-size: 3rem; display: block; }
 .heart-btn p { color: #fff; margin: 5px 0 0 0; font-weight: 600; }
+
 .card {
-    position: absolute; z-index: 10;
-    background: rgba(15, 5, 30, 0.85); backdrop-filter: blur(15px);
+    position: absolute; 
+    z-index: 10000; /* Capa superior para la tarjeta */
+    background: rgba(15, 5, 30, 0.9); backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 221, 0, 0.3);
     padding: 30px; border-radius: 24px; text-align: center;
     width: 85%; max-width: 320px; color: #ffffff;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
-    transition: opacity 1s ease, transform 1s ease;
+    transition: opacity 0.8s ease, transform 0.8s ease;
 }
 .message-highlight { font-size: 1.15rem; font-weight: 600; color: #ffe600; margin: 0 0 12px 0; }
 .message-main { font-size: 1.05rem; line-height: 1.6; margin: 0 0 15px 0; color: #f5f5f5; }
@@ -77,27 +85,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const heartBtn = document.getElementById('heartBtn');
     const messageCard = document.getElementById('messageCard');
 
-    const totalFlowers = 150; 
+    const totalFlowers = 120; // Optimizado para que rinda perfecto en teléfonos
     const flowerTypes = ['🌼', '🌻', '✨', '💛'];
 
     for (let i = 0; i < totalFlowers; i++) {
         const flower = document.createElement('div');
         flower.classList.add('flower');
         flower.innerText = flowerTypes[Math.floor(Math.random() * (i % 12 === 0 ? flowerTypes.length : 2))];
-        const angle = i * 0.18; 
+        const angle = i * 0.2; 
         const arms = (i % 2 === 0) ? 0 : Math.PI; 
-        const radius = Math.pow(i, 0.88) * 2.3; 
-        const x = Math.cos(angle + arms) * radius + (Math.random() - 0.5) * (radius * 0.2);
-        const y = Math.sin(angle + arms) * radius + (Math.random() - 0.5) * (radius * 0.2);
+        const radius = Math.pow(i, 0.85) * 2.5; 
+        const x = Math.cos(angle + arms) * radius + (Math.random() - 0.5) * (radius * 0.15);
+        const y = Math.sin(angle + arms) * radius + (Math.random() - 0.5) * (radius * 0.15);
         const centerFactor = 1 - (i / totalFlowers); 
         flower.style.setProperty('--x', `${x}px`); flower.style.setProperty('--y', `${y}px`);
-        flower.style.setProperty('--size', (0.5 + centerFactor * 1.3 + Math.random() * 0.3) + 'rem');
+        flower.style.setProperty('--size', (0.5 + centerFactor * 1.2 + Math.random() * 0.3) + 'rem');
         flower.style.setProperty('--opacity', 0.3 + centerFactor * 0.7);
         flower.style.setProperty('--glow', (4 + centerFactor * 10) + 'px');
         galaxy.appendChild(flower);
     }
 
-    // API de YouTube autorizada
     let player;
     const tag = document.createElement('script');
     tag.src = "https://youtube.com";
@@ -136,5 +143,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 </script>
-</body>
-</html>
