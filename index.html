@@ -1,29 +1,23 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Alguien Especial 💛</title>
-</head>
-<body>
-    <div class="galaxy" id="galaxy"></div>
+<!-- 1. CÓDIGO HTML -->
+<div class="galaxy" id="galaxy"></div>
 
-    <button class="heart-btn" id="heartBtn">
-        <span>💛</span>
-        <p>Toca para abrir</p>
-    </button>
+<button class="heart-btn" id="heartBtn">
+    <span>💛</span>
+    <p>Toca para abrir</p>
+</button>
 
-    <div class="card hidden" id="messageCard">
-        <p class="message-highlight">Eres una persona muy especial para mí. ✨</p>
-        <p class="message-main">Te quiero, siempre estaré ahí para ti.</p>
-        <p class="message-footer">Me hubiera gustado dártelo en persona. 💛</p>
+<div class="card hidden" id="messageCard">
+    <p class="message-highlight">Eres una persona muy especial para mí. ✨</p>
+    <p class="message-main">Te quiero, siempre estaré ahí para ti.</p>
+    <p class="message-footer">Me hubiera gustado dártelo en persona. 💛</p>
+    
+    <!-- El reproductor ahora es visible en formato mini para que el celular no bloquee el audio -->
+    <div class="player-container">
+        <div id="youtubePlayer"></div>
     </div>
+</div>
 
-    <!-- Audio directo optimizado para celulares -->
-    <audio id="bgMusic" loop preload="auto">
-        <source src="https://r2.dev" type="audio/mpeg">
-    </audio>
-
+<!-- 2. CÓDIGO CSS -->
 <style>
 body {
     margin: 0; padding: 0;
@@ -60,14 +54,15 @@ body {
     position: absolute; z-index: 10;
     background: rgba(15, 5, 30, 0.85); backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 221, 0, 0.3);
-    padding: 35px 45px; border-radius: 24px; text-align: center;
-    width: 80%; max-width: 320px; color: #ffffff;
+    padding: 30px; border-radius: 24px; text-align: center;
+    width: 85%; max-width: 320px; color: #ffffff;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
     transition: opacity 1s ease, transform 1s ease;
 }
-.message-highlight { font-size: 1.2rem; font-weight: 600; color: #ffe600; margin: 0 0 15px 0; }
-.message-main { font-size: 1.05rem; line-height: 1.6; margin: 0 0 20px 0; color: #f5f5f5; }
-.message-footer { font-size: 0.9rem; font-style: italic; color: rgba(255, 255, 255, 0.7); margin: 0; }
+.message-highlight { font-size: 1.15rem; font-weight: 600; color: #ffe600; margin: 0 0 12px 0; }
+.message-main { font-size: 1.05rem; line-height: 1.6; margin: 0 0 15px 0; color: #f5f5f5; }
+.message-footer { font-size: 0.9rem; font-style: italic; color: rgba(255, 255, 255, 0.7); margin: 0 0 15px 0; }
+.player-container { margin-top: 15px; border-radius: 12px; overflow: hidden; display: inline-block; border: 1px solid rgba(255, 230, 0, 0.3); width: 200px; height: 112px; }
 .hidden { opacity: 0; transform: scale(0.8) translateY(30px); pointer-events: none; }
 .fade-out { opacity: 0; transform: scale(0.5); pointer-events: none; }
 @keyframes rotateGalaxy { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -75,12 +70,12 @@ body {
 @keyframes pulseHeart { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 </style>
 
+<!-- 3. CÓDIGO JAVASCRIPT -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const galaxy = document.getElementById('galaxy');
     const heartBtn = document.getElementById('heartBtn');
     const messageCard = document.getElementById('messageCard');
-    const bgMusic = document.getElementById('bgMusic');
 
     const totalFlowers = 150; 
     const flowerTypes = ['🌼', '🌻', '✨', '💛'];
@@ -102,16 +97,44 @@ document.addEventListener("DOMContentLoaded", () => {
         galaxy.appendChild(flower);
     }
 
+    // API de YouTube autorizada
+    let player;
+    const tag = document.createElement('script');
+    tag.src = "https://youtube.com";
+    const firstScriptTag = document.getElementsByTagName('script');
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    window.onYouTubeIframeAPIReady = function() {
+        player = new YT.Player('youtubePlayer', {
+            height: '112',
+            width: '200',
+            videoId: '7Y4lF3p36-4', 
+            playerVars: {
+                'autoplay': 0,
+                'controls': 1,
+                'playsinline': 1, 
+                'loop': 1,
+                'playlist': '7Y4lF3p36-4'
+            }
+        });
+    }
+
     heartBtn.addEventListener('click', () => {
         heartBtn.classList.add('fade-out');
         setTimeout(() => {
             messageCard.classList.remove('hidden');
             heartBtn.style.display = 'none'; 
         }, 300);
-        bgMusic.play().catch(e => console.log("Interacción requerida", e));
+
+        try {
+            if (player && typeof player.playVideo === 'function') {
+                player.playVideo();
+            }
+        } catch (e) {
+            console.log(e);
+        }
     });
 });
 </script>
 </body>
-  </html>
-  
+</html>
