@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Alguien Especial 💛</title>
+</head>
+<body>
+    <div class="galaxy" id="galaxy"></div>
+
+    <button class="heart-btn" id="heartBtn">
+        <span>💛</span>
+        <p>Toca para abrir</p>
+    </button>
+
+    <div class="card hidden" id="messageCard">
+        <p class="message-highlight">Eres una persona muy especial para mí. ✨</p>
+        <p class="message-main">Te quiero, siempre estaré ahí para ti.</p>
+        <p class="message-footer">Me hubiera gustado dártelo en persona. 💛</p>
+    </div>
+
+    <!-- Audio directo optimizado para celulares -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://r2.dev" type="audio/mpeg">
+    </audio>
+
+<style>
+body {
+    margin: 0; padding: 0;
+    background: radial-gradient(circle, #09011a 0%, #020005 100%);
+    overflow: hidden; display: flex;
+    justify-content: center; align-items: center;
+    height: 100vh; perspective: 1000px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+}
+.galaxy {
+    position: relative; width: 100vw; height: 100vh;
+    display: flex; justify-content: center; align-items: center;
+    animation: rotateGalaxy 60s linear infinite;
+}
+.flower {
+    position: absolute; font-size: var(--size);
+    left: calc(50% + var(--x)); top: calc(50% + var(--y));
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(0 0 var(--glow) rgba(255, 221, 0, 0.8));
+    opacity: var(--opacity); user-select: none;
+    animation: float 4s ease-in-out infinite alternate;
+}
+.heart-btn {
+    position: absolute; background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px); border: 2px solid rgba(255, 230, 0, 0.5);
+    padding: 20px 30px; border-radius: 50px; cursor: pointer;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.3); z-index: 20;
+    text-align: center; animation: pulseHeart 2s infinite;
+    transition: all 0.5s ease;
+}
+.heart-btn span { font-size: 3rem; display: block; }
+.heart-btn p { color: #fff; margin: 5px 0 0 0; font-weight: 600; }
+.card {
+    position: absolute; z-index: 10;
+    background: rgba(15, 5, 30, 0.85); backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 221, 0, 0.3);
+    padding: 35px 45px; border-radius: 24px; text-align: center;
+    width: 80%; max-width: 320px; color: #ffffff;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+    transition: opacity 1s ease, transform 1s ease;
+}
+.message-highlight { font-size: 1.2rem; font-weight: 600; color: #ffe600; margin: 0 0 15px 0; }
+.message-main { font-size: 1.05rem; line-height: 1.6; margin: 0 0 20px 0; color: #f5f5f5; }
+.message-footer { font-size: 0.9rem; font-style: italic; color: rgba(255, 255, 255, 0.7); margin: 0; }
+.hidden { opacity: 0; transform: scale(0.8) translateY(30px); pointer-events: none; }
+.fade-out { opacity: 0; transform: scale(0.5); pointer-events: none; }
+@keyframes rotateGalaxy { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes float { from { transform: translate(-50%, -50%) translateY(0px) rotate(0deg); } to { transform: translate(-50%, -50%) translateY(-6px) rotate(8deg); } }
+@keyframes pulseHeart { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const galaxy = document.getElementById('galaxy');
+    const heartBtn = document.getElementById('heartBtn');
+    const messageCard = document.getElementById('messageCard');
+    const bgMusic = document.getElementById('bgMusic');
+
+    const totalFlowers = 150; 
+    const flowerTypes = ['🌼', '🌻', '✨', '💛'];
+
+    for (let i = 0; i < totalFlowers; i++) {
+        const flower = document.createElement('div');
+        flower.classList.add('flower');
+        flower.innerText = flowerTypes[Math.floor(Math.random() * (i % 12 === 0 ? flowerTypes.length : 2))];
+        const angle = i * 0.18; 
+        const arms = (i % 2 === 0) ? 0 : Math.PI; 
+        const radius = Math.pow(i, 0.88) * 2.3; 
+        const x = Math.cos(angle + arms) * radius + (Math.random() - 0.5) * (radius * 0.2);
+        const y = Math.sin(angle + arms) * radius + (Math.random() - 0.5) * (radius * 0.2);
+        const centerFactor = 1 - (i / totalFlowers); 
+        flower.style.setProperty('--x', `${x}px`); flower.style.setProperty('--y', `${y}px`);
+        flower.style.setProperty('--size', (0.5 + centerFactor * 1.3 + Math.random() * 0.3) + 'rem');
+        flower.style.setProperty('--opacity', 0.3 + centerFactor * 0.7);
+        flower.style.setProperty('--glow', (4 + centerFactor * 10) + 'px');
+        galaxy.appendChild(flower);
+    }
+
+    heartBtn.addEventListener('click', () => {
+        heartBtn.classList.add('fade-out');
+        setTimeout(() => {
+            messageCard.classList.remove('hidden');
+            heartBtn.style.display = 'none'; 
+        }, 300);
+        bgMusic.play().catch(e => console.log("Interacción requerida", e));
+    });
+});
+</script>
+</body>
+  </html>
+  
